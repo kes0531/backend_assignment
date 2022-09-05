@@ -17,6 +17,7 @@ class UserManager(BaseUserManager):
             username = username,
             password = password,
             is_admin = True,
+            is_staff = True,
         )
         superuser.save(using=self._db)
         return superuser
@@ -28,8 +29,9 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=20)
     user_image = models.ImageField(blank=True)
 
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True) # 계정 활성화 여부
+    is_admin = models.BooleanField(default=False) # admin 권한
+    is_staff = models.BooleanField(default=False) # admin 페이지 접속 권한
 
     USERNAME_FIELD = 'userid'
     REQUIRED_FIELDS = ['username']
@@ -37,7 +39,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     def has_perm(self, perm, obj=None):
         return True
     
-    def has_module_perms(self, user):
+    def has_module_perms(self, app_label):
         return True
 
     @property
